@@ -208,6 +208,29 @@ window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
 window.addEventListener("blur", handleBlur);
 
+let mousePressedCode = null;
+
+function handleMouseDown(event) {
+  const keyElement = event.target.closest(".key");
+  if (!keyElement) return;
+  const code = keyElement.dataset.code;
+  if (code) {
+    event.preventDefault();
+    mousePressedCode = code;
+    pressKey(code);
+  }
+}
+
+function handleMouseUp(event) {
+  if (mousePressedCode) {
+    releaseKey(mousePressedCode);
+    mousePressedCode = null;
+  }
+}
+
+document.addEventListener("mousedown", handleMouseDown);
+document.addEventListener("mouseup", handleMouseUp);
+
 // ====================== ИНИЦИАЛИЗАЦИЯ ======================
 document.addEventListener("DOMContentLoaded", () => {
   loadLayout("full-ansi");
