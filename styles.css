@@ -16,6 +16,7 @@
 
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -29,12 +30,28 @@ body {
 
 .keyboard-container {
   display: inline-block;
+  padding-top: 40px;
 }
 
 .keyboard {
   display: flex;
+  gap: var(--gap);
+  align-items: flex-start;
+}
+
+.keyboard-main,
+.keyboard-side,
+.keyboard-num {
+  display: flex;
   flex-direction: column;
   gap: var(--gap);
+}
+
+.keyboard-side {
+  margin-left: calc(var(--gap) * 2);
+}
+.keyboard-num {
+  margin-left: calc(var(--gap) * 3);
 }
 
 .row {
@@ -66,63 +83,22 @@ body {
   transform: translateY(2px);
 }
 
-/* Классы ширины */
-.u0_5 {
-  width: calc(var(--unit) * 0.93);
-  height: calc(var(--unit) \2.3);
-}
-.u1 {
-  width: calc(var(--unit) * 1);
-}
-.u1_25 {
-  width: calc(var(--unit) * 1.25);
-}
-.u1_5 {
-  width: calc(var(--unit) * 1.32);
-}
-.u1_75 {
-  width: calc(var(--unit) * 2);
-}
-.u2 {
-  width: calc(var(--unit) * 2);
-}
-.u2_25 {
-  width: calc(var(--unit) * 1.5);
-}
-.u2_75 {
-  width: calc(var(--unit) * 2.52);
-}
-.u6_25 {
-  width: calc(var(--unit) * 5.14);
+.key.half-height {
+  height: calc((var(--key-height) - var(--gap)) / 2);
 }
 
-.enter {
+.key.tall {
   height: calc(var(--key-height) * 2 + var(--gap));
   margin-bottom: calc(-1 * (var(--key-height) + var(--gap)));
-}
-
-/* Блок стрелок  */
-.arrow-cluster {
-  display: flex;
-  align-items: stretch;
-  gap: var(--gap);
-  width: calc(var(--unit) * 3.6);
-  height: var(--key-height);
-}
-
-.arrow-cluster > .key {
-  flex: 1;
-  height: 100%;
 }
 
 .arrow-center {
   display: flex;
   flex-direction: column;
   gap: var(--gap);
-  flex: 2;
 }
 
 .arrow-center .key {
+  width: 100%;
   flex: 1;
-  height: calc((var(--key-height) - var(--gap)) / 2);
 }

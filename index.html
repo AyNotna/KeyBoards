@@ -7,119 +7,13 @@
     <title>KeyBoards</title>
   </head>
   <body>
+    <select id="layout-select">
+      <option value="laptop">Ноутбучная</option>
+      <option value="tkl-ansi">TKL ANSI</option>
+      <option value="full-ansi">Full-size ANSI</option>
+    </select>
     <main class="keyboard-container">
-      <div class="keyboard">
-        <!-- Ряд 1-->
-        <div class="row">
-          <div class="key u0_5" data-code="Escape">Esc</div>
-          <div class="key u0_5" data-code="F1">F1</div>
-          <div class="key u0_5" data-code="F2">F2</div>
-          <div class="key u0_5" data-code="F3">F3</div>
-          <div class="key u0_5" data-code="F4">F4</div>
-          <div class="key u0_5" data-code="F5">F5</div>
-          <div class="key u0_5" data-code="F6">F6</div>
-          <div class="key u0_5" data-code="F7">F7</div>
-          <div class="key u0_5" data-code="F8">F8</div>
-          <div class="key u0_5" data-code="F9">F9</div>
-          <div class="key u0_5" data-code="F10">F10</div>
-          <div class="key u0_5" data-code="F11">F11</div>
-          <div class="key u0_5" data-code="F12">F12</div>
-          <div class="key u0_5" data-code="Insert">Ins</div>
-          <div class="key u0_5" data-code="PrintScreen">PrtSc</div>
-          <div class="key u0_5" data-code="Delete">Del</div>
-        </div>
-
-        <!-- Ряд 2-->
-        <div class="row">
-          <div class="key u1" data-code="Backquote">`Ё</div>
-          <div class="key u1" data-code="Digit1">1</div>
-          <div class="key u1" data-code="Digit2">2</div>
-          <div class="key u1" data-code="Digit3">3</div>
-          <div class="key u1" data-code="Digit4">4</div>
-          <div class="key u1" data-code="Digit5">5</div>
-          <div class="key u1" data-code="Digit6">6</div>
-          <div class="key u1" data-code="Digit7">7</div>
-          <div class="key u1" data-code="Digit8">8</div>
-          <div class="key u1" data-code="Digit9">9</div>
-          <div class="key u1" data-code="Digit0">0</div>
-          <div class="key u1" data-code="Minus">-</div>
-          <div class="key u1" data-code="Equal">=</div>
-          <div class="key u2" data-code="Backspace">←</div>
-        </div>
-
-        <!-- Ряд 3 -->
-        <div class="row">
-          <div class="key u1_5" data-code="Tab">Tab</div>
-          <div class="key u1" data-code="KeyQ">Й</div>
-          <div class="key u1" data-code="KeyW">Ц</div>
-          <div class="key u1" data-code="KeyE">У</div>
-          <div class="key u1" data-code="KeyR">К</div>
-          <div class="key u1" data-code="KeyT">Е</div>
-          <div class="key u1" data-code="KeyY">Н</div>
-          <div class="key u1" data-code="KeyU">Г</div>
-          <div class="key u1" data-code="KeyI">Ш</div>
-          <div class="key u1" data-code="KeyO">Щ</div>
-          <div class="key u1" data-code="KeyP">З</div>
-          <div class="key u1" data-code="BracketLeft">Х</div>
-          <div class="key u1" data-code="BracketRight">Ъ</div>
-          <div class="key u1" data-code="Enter">Enter</div>
-          <div class="key enter" data-code="Enter">Enter</div>
-        </div>
-
-        <!-- Ряд 4-->
-        <div class="row">
-          <div class="key u1_75" data-code="CapsLock">Caps</div>
-          <div class="key u1" data-code="KeyA">Ф</div>
-          <div class="key u1" data-code="KeyS">Ы</div>
-          <div class="key u1" data-code="KeyD">В</div>
-          <div class="key u1" data-code="KeyF">А</div>
-          <div class="key u1" data-code="KeyG">П</div>
-          <div class="key u1" data-code="KeyH">Р</div>
-          <div class="key u1" data-code="KeyJ">О</div>
-          <div class="key u1" data-code="KeyK">Л</div>
-          <div class="key u1" data-code="KeyL">Д</div>
-          <div class="key u1" data-code="Semicolon">Ж</div>
-          <div class="key u1" data-code="Quote">Э</div>
-          <div class="key u1_5" data-code="Backslash">\</div>
-        </div>
-
-        <!-- Ряд 5 -->
-        <div class="row">
-          <div class="key u2_25" data-code="ShiftLeft">Shift</div>
-          <div class="key u1" data-code="Backslash">\</div>
-          <div class="key u1" data-code="KeyZ">Я</div>
-          <div class="key u1" data-code="KeyX">Ч</div>
-          <div class="key u1" data-code="KeyC">С</div>
-          <div class="key u1" data-code="KeyV">М</div>
-          <div class="key u1" data-code="KeyB">И</div>
-          <div class="key u1" data-code="KeyN">Т</div>
-          <div class="key u1" data-code="KeyM">Ь</div>
-          <div class="key u1" data-code="Comma">Б</div>
-          <div class="key u1" data-code="Period">Ю</div>
-          <div class="key u1" data-code="Slash">.</div>
-          <div class="key u2_75" data-code="ShiftRight">Shift</div>
-        </div>
-
-        <!-- Ряд 6 -->
-        <div class="row">
-          <div class="key u1_25" data-code="ControlLeft">Ctrl</div>
-          <div class="key u1_25" data-code="FunctionButton">Fn</div>
-          <div class="key u1" data-code="MetaLeft">Win</div>
-          <div class="key u1" data-code="AltLeft">Alt</div>
-          <div class="key u6_25" data-code="Space"></div>
-          <div class="key u1" data-code="AltRight">Alt</div>
-          <div class="key u1" data-code="Copilot">Cop</div>
-          <!-- Блок стрелок-->
-          <div class="arrow-cluster">
-            <div class="key" data-code="ArrowLeft">←</div>
-            <div class="arrow-center">
-              <div class="key" data-code="ArrowUp">↑</div>
-              <div class="key" data-code="ArrowDown">↓</div>
-            </div>
-            <div class="key" data-code="ArrowRight">→</div>
-          </div>
-        </div>
-      </div>
+      <div class="keyboard"></div>
     </main>
     <script src="script.js"></script>
   </body>

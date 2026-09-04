@@ -6,7 +6,6 @@ let isSoundLoaded = false;
 function initAudio() {
   if (audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
   fetch("assets/click.wav")
     .then((response) => {
       if (!response.ok) throw new Error("Файл не найден");
@@ -20,43 +19,133 @@ function initAudio() {
     })
     .catch((err) => {
       console.warn(
-        "Не удалось загрузить click.mp3, используем сгенерированный звук",
+        "Не удалось загрузить click.wav, используем сгенерированный звук",
         err,
       );
       generateFallbackClick();
     });
 }
 
-function generateFallbackClick() {
-  const duration = 0.05;
-  const sampleRate = audioCtx.sampleRate;
-  const length = sampleRate * duration;
-  const buffer = audioCtx.createBuffer(1, length, sampleRate);
-  const data = buffer.getChannelData(0);
-
-  for (let i = 0; i < length; i++) {
-    const t = i / sampleRate;
-    data[i] = (Math.random() * 2 - 1) * Math.exp(-t * 100);
-  }
-
-  clickBuffer = buffer;
-  isSoundLoaded = true;
-  console.log("Сгенерирован fallback-звук");
-}
-
 function playClick() {
   if (!audioCtx || !isSoundLoaded) return;
-
   const source = audioCtx.createBufferSource();
   source.buffer = clickBuffer;
   source.playbackRate.value = 0.95 + Math.random() * 0.1;
-
   const gainNode = audioCtx.createGain();
   gainNode.gain.value = 0.8 + Math.random() * 0.2;
-
   source.connect(gainNode);
   gainNode.connect(audioCtx.destination);
   source.start();
+}
+
+// ====================== РЕНДЕРИНГ ======================
+function createKeyElement(keyData) {
+  if (keyData.type === "spacer") {
+    const spacer = document.createElement("div");
+    spacer.className = "spacer";
+    if (keyData.width) {
+      spacer.style.width = `calc(var(--unit) * ${keyData.width})`;
+    }
+    if (keyData.height) {
+      spacer.style.height = `calc(var(--key-height) * ${keyData.height})`;
+    } else {
+      spacer.style.height = "var(--key-height)";
+    }
+    return spacer;
+  }
+  const key = document.createElement("div");
+  key.className = "key";
+  if (keyData.class) key.classList.add(keyData.class);
+  key.dataset.code = keyData.code;
+  key.textContent = keyData.label || "";
+
+  if (keyData.width) {
+    key.style.width = `calc(var(--unit) * ${keyData.width})`;
+  }
+  if (keyData.height && keyData.height !== 1) {
+    if (keyData.height === 0.5) {
+      key.style.height = `calc((var(--key-height) - var(--gap)) / 2)`;
+      key.classList.add("half-height");
+    } else if (keyData.height === 2) {
+      key.style.height = `calc(var(--key-height) * 2 + var(--gap))`;
+      key.classList.add("tall");
+    } else {
+      key.style.height = `calc(var(--key-height) * ${keyData.height})`;
+    }
+  }
+  return key;
+}
+
+function renderRow(rowData, container) {
+  const row = document.createElement("div");
+  row.className = "row";
+  container.appendChild(row);
+
+  for (let i = 0; i < rowData.keys.length; i++) {
+    const keyData = rowData.keys[i];
+    if (!keyData) continue;
+
+    if (
+      keyData.height === 0.5 &&
+      rowData.keys[i + 1] &&
+      rowData.keys[i + 1].height === 0.5
+    ) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "arrow-center";
+      const upKey = createKeyElement(keyData);
+      const downKey = createKeyElement(rowData.keys[i + 1]);
+      wrapper.appendChild(upKey);
+      wrapper.appendChild(downKey);
+      row.appendChild(wrapper);
+      i++;
+    } else {
+      row.appendChild(createKeyElement(keyData));
+    }
+  }
+}
+
+function renderColumn(rowsData, container) {
+  rowsData.forEach((rowData) => renderRow(rowData, container));
+}
+
+function renderKeyboard(layout) {
+  const container = document.querySelector(".keyboard");
+  container.innerHTML = "";
+
+  const mainWrapper = document.createElement("div");
+  mainWrapper.className = "keyboard-main";
+  container.appendChild(mainWrapper);
+  layout.main.forEach((rowData) => renderRow(rowData, mainWrapper));
+
+  if (layout.side && layout.side.length > 0) {
+    const isColumnsFormat = Array.isArray(layout.side[0].rows);
+
+    if (isColumnsFormat) {
+      layout.side.forEach((columnData) => {
+        const sideWrapper = document.createElement("div");
+        sideWrapper.className = "keyboard-side";
+        container.appendChild(sideWrapper);
+        renderColumn(columnData.rows, sideWrapper);
+      });
+    } else {
+      const sideWrapper = document.createElement("div");
+      sideWrapper.className = "keyboard-side";
+      container.appendChild(sideWrapper);
+      renderColumn(layout.side, sideWrapper);
+    }
+  }
+}
+
+// ====================== ЗАГРУЗКА РАСКЛАДКИ ======================
+async function loadLayout(layoutName) {
+  try {
+    const response = await fetch(`assets/layouts/${layoutName}.json`);
+    if (!response.ok) throw new Error("Ошибка загрузки");
+    const layout = await response.json();
+    renderKeyboard(layout);
+  } catch (err) {
+    console.error("Не удалось загрузить раскладку", err);
+  }
 }
 
 // ====================== ОБРАБОТКА КЛАВИШ ======================
@@ -94,9 +183,16 @@ const preventDefaultCodes = new Set([
 function handleKeyDown(event) {
   if (!audioCtx) initAudio();
   if (event.repeat) return;
-  //   if (event.code === "ControlLeft") return;
-  if (preventDefaultCodes.has(event.code)) event.preventDefault();
 
+  if (
+    event.getModifierState("AltGraph") &&
+    (event.code === "ControlLeft" || event.code === "ControlRight")
+  ) {
+    return;
+  }
+  if (event.code === "ControlRight") return;
+
+  if (preventDefaultCodes.has(event.code)) event.preventDefault();
   pressKey(event.code);
 }
 
@@ -112,4 +208,14 @@ window.addEventListener("keydown", handleKeyDown);
 window.addEventListener("keyup", handleKeyUp);
 window.addEventListener("blur", handleBlur);
 
-console.log("Клавиатура готова к использованию");
+// ====================== ИНИЦИАЛИЗАЦИЯ ======================
+document.addEventListener("DOMContentLoaded", () => {
+  loadLayout("full-ansi");
+
+  const selector = document.getElementById("layout-select");
+  if (selector) {
+    selector.addEventListener("change", (e) => {
+      loadLayout(e.target.value);
+    });
+  }
+});
