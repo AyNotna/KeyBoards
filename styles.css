@@ -1,0 +1,128 @@
+:root {
+  --unit: 50px;
+  --key-height: 50px;
+  --gap: 2px;
+  --key-bg: #f0f0f0;
+  --key-border: #b0b0b0;
+  --key-text: #333;
+  --key-radius: 6px;
+  --pressed-bg: #4a90d9;
+  --pressed-text: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #2c2c2c;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.keyboard-container {
+  display: inline-block;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.row {
+  display: flex;
+  gap: var(--gap);
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--key-height);
+  background-color: var(--key-bg);
+  border: 1px solid var(--key-border);
+  border-radius: var(--key-radius);
+  color: var(--key-text);
+  font-size: 14px;
+  user-select: none;
+  transition:
+    background-color 0.05s,
+    transform 0.05s,
+    color 0.05s;
+  flex-shrink: 0;
+}
+
+.key.pressed {
+  background-color: var(--pressed-bg);
+  color: var(--pressed-text);
+  transform: translateY(2px);
+}
+
+/* Классы ширины */
+.u0_5 {
+  width: calc(var(--unit) * 0.93);
+  height: calc(var(--unit) \2.3);
+}
+.u1 {
+  width: calc(var(--unit) * 1);
+}
+.u1_25 {
+  width: calc(var(--unit) * 1.25);
+}
+.u1_5 {
+  width: calc(var(--unit) * 1.32);
+}
+.u1_75 {
+  width: calc(var(--unit) * 2);
+}
+.u2 {
+  width: calc(var(--unit) * 2);
+}
+.u2_25 {
+  width: calc(var(--unit) * 1.5);
+}
+.u2_75 {
+  width: calc(var(--unit) * 2.52);
+}
+.u6_25 {
+  width: calc(var(--unit) * 5.14);
+}
+
+.enter {
+  height: calc(var(--key-height) * 2 + var(--gap));
+  margin-bottom: calc(-1 * (var(--key-height) + var(--gap)));
+}
+
+/* Блок стрелок  */
+.arrow-cluster {
+  display: flex;
+  align-items: stretch;
+  gap: var(--gap);
+  width: calc(var(--unit) * 3.6);
+  height: var(--key-height);
+}
+
+.arrow-cluster > .key {
+  flex: 1;
+  height: 100%;
+}
+
+.arrow-center {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  flex: 2;
+}
+
+.arrow-center .key {
+  flex: 1;
+  height: calc((var(--key-height) - var(--gap)) / 2);
+}
