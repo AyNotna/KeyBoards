@@ -1,38 +1,69 @@
 // ====================== АУДИО ======================
 let audioCtx = null;
-let clickBuffer = null;
-let isSoundLoaded = false;
+let soundBuffers = []; // массив загруженных аудиобуферов текущего профиля
+let isSoundLoaded = false; // есть ли хотя бы один буфер
+let soundProfiles = []; // массив профилей из JSON
+let currentProfileIndex = 0; // индекс выбранного профиля
 
 function initAudio() {
   if (audioCtx) return;
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  fetch("assets/click.wav")
-    .then((response) => {
-      if (!response.ok) throw new Error("Файл не найден");
-      return response.arrayBuffer();
-    })
-    .then((arrayBuffer) => audioCtx.decodeAudioData(arrayBuffer))
-    .then((buffer) => {
-      clickBuffer = buffer;
-      isSoundLoaded = true;
-      console.log("Звук загружен");
-    })
-    .catch((err) => {
-      console.warn(
-        "Не удалось загрузить click.wav, используем сгенерированный звук",
-        err,
-      );
-      generateFallbackClick();
-    });
+}
+
+async function loadSoundProfiles() {
+  try {
+    const response = await fetch("assets/sound.json");
+    if (!response.ok) throw new Error("Ошибка загрузки assets/sound.json");
+    soundProfiles = await response.json();
+  } catch (err) {
+    console.error("Не удалось загрузить sound.json", err);
+    soundProfiles = [];
+  }
+}
+
+async function loadSoundProfile(index) {
+  if (!audioCtx) initAudio();
+  const profile = soundProfiles[index];
+  if (!profile) return;
+
+  soundBuffers = [];
+  isSoundLoaded = false;
+
+  if (profile.files && profile.files.length > 0) {
+    for (const filePath of profile.files) {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error(`Не найден ${filePath}`);
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = await audioCtx.decodeAudioData(arrayBuffer);
+        soundBuffers.push(buffer);
+      } catch (err) {
+        console.warn(`Ошибка загрузки звука ${filePath}`, err);
+      }
+    }
+  }
+
+  if (soundBuffers.length > 0) {
+    isSoundLoaded = true;
+    console.log(
+      `Звуковой профиль "${profile.name}" загружен (${soundBuffers.length} буферов)`,
+    );
+  } else {
+    console.warn(`В профиле "${profile.name}" не загружено ни одного звука`);
+  }
 }
 
 function playClick() {
-  if (!audioCtx || !isSoundLoaded) return;
+  if (!audioCtx || !isSoundLoaded || soundBuffers.length === 0) return;
+
+  const randomIndex = Math.floor(Math.random() * soundBuffers.length);
   const source = audioCtx.createBufferSource();
-  source.buffer = clickBuffer;
+  source.buffer = soundBuffers[randomIndex];
   source.playbackRate.value = 0.95 + Math.random() * 0.1;
+
   const gainNode = audioCtx.createGain();
   gainNode.gain.value = 0.8 + Math.random() * 0.2;
+
   source.connect(gainNode);
   gainNode.connect(audioCtx.destination);
   source.start();
@@ -232,13 +263,34 @@ document.addEventListener("mousedown", handleMouseDown);
 document.addEventListener("mouseup", handleMouseUp);
 
 // ====================== ИНИЦИАЛИЗАЦИЯ ======================
-document.addEventListener("DOMContentLoaded", () => {
-  loadLayout("full-ansi");
+document.addEventListener("DOMContentLoaded", async () => {
+  // Загружаем профили звуков и звук по умолчанию
+  await loadSoundProfiles();
+  await loadSoundProfile(0);
 
-  const selector = document.getElementById("layout-select");
-  if (selector) {
-    selector.addEventListener("change", (e) => {
+  // Загружаем раскладку по умолчанию
+  await loadLayout("laptop");
+
+  // Настройка переключателя раскладки
+  const layoutSelector = document.getElementById("layout-select");
+  if (layoutSelector) {
+    layoutSelector.addEventListener("change", (e) => {
       loadLayout(e.target.value);
+    });
+  }
+
+  // Настройка переключателя звука
+  const soundSelector = document.getElementById("sound-select");
+  if (soundSelector && soundProfiles.length > 0) {
+    soundProfiles.forEach((profile, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = profile.name;
+      soundSelector.appendChild(option);
+    });
+
+    soundSelector.addEventListener("change", (e) => {
+      loadSoundProfile(Number(e.target.value));
     });
   }
 });

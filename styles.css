@@ -27,10 +27,13 @@ body {
     -apple-system,
     sans-serif;
 }
-
+.selectors {
+  display: flex;
+  flex-direction: row;
+}
 .keyboard-container {
   display: inline-block;
-  margin-top: 40px;
+  margin-top: 200px;
   padding: 15px 20px;
   background: linear-gradient(to top, #3c3c3c 0%, #615d5d 100%);
   border-radius: 12px;
@@ -72,6 +75,7 @@ body {
   justify-content: center;
   height: var(--key-height);
   background-color: var(--key-bg);
+  box-shadow: 0 0 4px black;
   border-top: 0.125rem solid #787878;
   border-right: 0.25rem solid #787878;
   border-bottom: 0.475rem solid #b0b0b0;
