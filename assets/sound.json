@@ -1,0 +1,19 @@
+[
+  { "name": "obIochno", "files": ["assets/sounds/prost.flac"] },
+  {
+    "name": "Norm",
+    "files": ["assets/sounds/click.wav"]
+  },
+  {
+    "name": "Popi",
+    "files": ["assets/sounds/pop.wav"]
+  },
+  {
+    "name": "water",
+    "files": ["assets/sounds/water.wav"]
+  },
+  {
+    "name": "Murloc",
+    "files": ["assets/sounds/murloc.mp3"]
+  }
+]
